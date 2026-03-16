@@ -34,13 +34,11 @@ Before the game begins, an overlay allows both players to choose an archetype:
 - **Ring-Out Fire Effect:** When a player crosses the blast zone threshold, a continuous rising pillar of fire erupts from their elimination point. The Game Over screen is delayed by **1.5 seconds** to allow this dramatic animation to unfold.
 - **Player Scaling:** Player size was slightly reduced (`40x80`) to make platforming and dodging feel more precise.
 
-![Ring Out Victory](C:\Users\ileti\.gemini\antigravity\brain\a7a4838b-2cfd-42d0-b676-6e0a9c4e4354\final_game_state_p2_wins_1773656889050.png)
 
 ### 5. Dynamic UI
 - Health bars decrement correctly representing a percentage of remaining health.
 - Cooldown overlays visually demonstrate when players can use heavy attacks again, alongside text indicators showing the time remaining.
 
-![Heavy Attack Cooldown Preview](C:\Users\ileti\.gemini\antigravity\brain\a7a4838b-2cfd-42d0-b676-6e0a9c4e4354\heavy_atk_test_1773656248800.png)
 
 ## Validation
 Game inputs, canvas layout, hit registration, health subtraction, and cooldown functionalities have been verified with an autonomous browser subagent. The subagent confirmed multiple success cases:
