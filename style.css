@@ -1,0 +1,236 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Press Start 2P', cursive;
+}
+
+body {
+    background-color: #1a1a2e;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+}
+
+#game-container {
+    position: relative;
+    width: 1024px;
+    height: 576px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
+    background: linear-gradient(to bottom, #2b2b52 0%, #16213e 100%);
+    border: 4px solid #fff;
+    border-radius: 8px;
+}
+
+canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+#ui-layer {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    right: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.player-info {
+    width: 350px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.health-bar {
+    width: 100%;
+    height: 30px;
+    background-color: rgba(255, 0, 0, 0.3);
+    border: 3px solid white;
+    border-radius: 4px;
+    position: relative;
+}
+
+.health-fill {
+    height: 100%;
+    background-color: #00ff00;
+    width: 100%;
+    transition: width 0.2s ease-out;
+}
+
+.p2-health-color {
+    background-color: #00ff00;
+}
+
+/* Make P2 health bar drain from right to left */
+#p2-info .health-bar {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.cooldown-timer {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    font-size: 10px;
+    color: #ffd700;
+    text-shadow: 1px 1px 0 #000;
+}
+
+.cd-bar {
+    width: 100%;
+    height: 10px;
+    background-color: #333;
+    border: 1px solid white;
+    border-radius: 2px;
+}
+
+#p1-cd-fill,
+#p2-cd-fill {
+    height: 100%;
+    width: 100%;
+    background-color: #ffd700;
+    transition: width 0.1s linear;
+}
+
+#match-timer {
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 10px 15px;
+    border: 3px solid white;
+    border-radius: 8px;
+    font-size: 24px;
+    text-shadow: 2px 2px 0 #000;
+}
+
+#p2-info {
+    text-align: right;
+}
+
+#game-over-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 20;
+}
+
+#game-over-screen h1 {
+    font-size: 36px;
+    margin-bottom: 20px;
+    color: #fff;
+    text-shadow: 3px 3px 0 #000;
+}
+
+#game-over-screen button {
+    padding: 15px 30px;
+    font-size: 16px;
+    background-color: #e50914;
+    color: white;
+    border: 2px solid white;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background 0.2s;
+}
+
+#game-over-screen button:hover {
+    background-color: #b20710;
+}
+
+#character-select-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 30;
+}
+
+#character-select-screen h1 {
+    font-size: 32px;
+    margin-bottom: 40px;
+    color: #fff;
+    text-shadow: 2px 2px 0 #000;
+}
+
+.selection-container {
+    display: flex;
+    justify-content: space-around;
+    width: 80%;
+    margin-bottom: 40px;
+}
+
+.player-selection {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+.player-selection h2 {
+    font-size: 16px;
+    margin-bottom: 10px;
+    color: #ffd700;
+}
+
+.char-btn {
+    padding: 15px 30px;
+    width: 250px;
+    font-size: 14px;
+    background-color: #2b2b52;
+    color: white;
+    border: 2px solid #555;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+.char-btn:hover {
+    background-color: #3e3e70;
+    border-color: #aaa;
+}
+
+.char-btn.selected {
+    background-color: #4CAF50;
+    border-color: #fff;
+    box-shadow: 0 0 10px #4CAF50;
+}
+
+#start-game-btn {
+    padding: 20px 40px;
+    font-size: 20px;
+    background-color: #e50914;
+    color: white;
+    border: 2px solid white;
+    cursor: pointer;
+    border-radius: 8px;
+    text-transform: uppercase;
+    transition: transform 0.2s, background 0.2s;
+}
+
+#start-game-btn:hover {
+    background-color: #b20710;
+    transform: scale(1.05);
+}
+
+.hidden {
+    display: none !important;
+}

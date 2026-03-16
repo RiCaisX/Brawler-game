@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brawler Game</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div id="game-container">
+        <!-- Character Selection Screen -->
+        <div id="character-select-screen">
+            <h1>Select Character</h1>
+            <div class="selection-container">
+                <div class="player-selection" id="p1-selection">
+                    <h2>Player 1 (WASD)</h2>
+                    <button class="char-btn selected" data-player="p1" data-char="dps">DPS (Original)</button>
+                    <button class="char-btn" data-player="p1" data-char="tank">Tank</button>
+                    <button class="char-btn" data-player="p1" data-char="healer">Healer</button>
+                </div>
+                <div class="player-selection" id="p2-selection">
+                    <h2>Player 2 (Arrows)</h2>
+                    <button class="char-btn selected" data-player="p2" data-char="dps">DPS (Original)</button>
+                    <button class="char-btn" data-player="p2" data-char="tank">Tank</button>
+                    <button class="char-btn" data-player="p2" data-char="healer">Healer</button>
+                </div>
+            </div>
+            <button id="start-game-btn">Start Fight! (Space)</button>
+        </div>
+
+        <!-- Health Bar UI -->
+        <div id="ui-layer" class="hidden">
+            <!-- Player 1 -->
+            <div class="player-info" id="p1-info">
+                <div class="health-bar">
+                    <div id="p1-health" class="health-fill"></div>
+                </div>
+                <div class="cooldown-timer">
+                    <span id="p1-cd-text">Heavy Atk: Ready</span>
+                    <div class="cd-bar">
+                        <div id="p1-cd-fill"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Timer / Center UI -->
+            <div id="match-timer">99</div>
+
+            <!-- Player 2 -->
+            <div class="player-info" id="p2-info">
+                <div class="health-bar">
+                    <div id="p2-health" class="health-fill p2-health-color"></div>
+                </div>
+                <div class="cooldown-timer">
+                    <span id="p2-cd-text">Heavy Atk: Ready</span>
+                    <div class="cd-bar">
+                        <div id="p2-cd-fill"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="game-over-screen" class="hidden">
+            <h1 id="win-text">Player 1 Wins!</h1>
+            <button onclick="location.reload()">Restart (Space)</button>
+        </div>
+
+        <canvas id="gameCanvas" class="hidden"></canvas>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
