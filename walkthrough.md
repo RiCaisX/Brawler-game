@@ -22,8 +22,9 @@ Before the game begins, an overlay allows both players to choose an archetype:
 - **DPS:** The original baseline character. Medium size, health (`100 HP`), and decent speed. Reliable and balanced.
 - **Healer:** Tiny hitbox, low health (`80 HP`), fast movement, but weak attacks. They feature a **Regeneration Passive**: Any damage taken from basic attacks is marked as temporary. If the Healer avoids combat for 6 seconds, they will rapidly regenerate their temporary damage. Heavy attacks, however, deal permanent damage.
 
-(images/character_selection_screen_1773658728766.png)
-  <img src="C:\Users\ileti\.gemini\antigravity\brain\a7a4838b-2cfd-42d0-b676-6e0a9c4e4354\healer_regen_after_17s_1773658780515.png" style="width: 48%;">
+<div style="display: flex; gap: 10px;">
+  <img src="images\character_selection_screen_1773658728766.png" style="width: 48%;">
+  <img src="images\healer_regen_after_17s_1773658780515.png" style="width: 48%;">
 </div>
 
 ### 5. Aerial Combat & Ring-Outs
