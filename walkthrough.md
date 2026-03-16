@@ -1,6 +1,5 @@
 # Brawler Game Walkthrough
 
-The base structure of the 2-player local multiplayer brawler has been successfully implemented! It's hosted locally for testing in `C:\Users\ileti\.gemini\antigravity\scratch\brawler_game`.
 
 ## Features Added
 
