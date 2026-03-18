@@ -11,8 +11,80 @@
 
 <body>
     <div id="game-container">
+        <!-- Main Menu Screen -->
+        <div id="main-menu-screen">
+            <h1>Brawler Game</h1>
+            <button id="menu-play-btn" class="menu-btn">Play Game</button>
+            <button id="menu-how-to-play-btn" class="menu-btn">How to Play</button>
+            <button id="menu-options-btn" class="menu-btn">Options</button>
+        </div>
+
+        <!-- Options Screen -->
+        <div id="options-screen" class="hidden">
+            <h1>Options</h1>
+            <div class="options-container">
+                <div class="controls-col">
+                    <h3>Player 1</h3>
+                    <div class="keybind-row"><span>Up:</span><button id="btn-p1-up" class="keybind-btn" data-player="p1"
+                            data-action="up">W</button></div>
+                    <div class="keybind-row"><span>Down:</span><button id="btn-p1-down" class="keybind-btn"
+                            data-player="p1" data-action="down">S</button></div>
+                    <div class="keybind-row"><span>Left:</span><button id="btn-p1-left" class="keybind-btn"
+                            data-player="p1" data-action="left">A</button></div>
+                    <div class="keybind-row"><span>Right:</span><button id="btn-p1-right" class="keybind-btn"
+                            data-player="p1" data-action="right">D</button></div>
+                    <div class="keybind-row"><span>Basic Atk:</span><button id="btn-p1-basic" class="keybind-btn"
+                            data-player="p1" data-action="basic">1</button></div>
+                    <div class="keybind-row"><span>Heavy Atk:</span><button id="btn-p1-heavy" class="keybind-btn"
+                            data-player="p1" data-action="heavy">2</button></div>
+                </div>
+                <div class="controls-col">
+                    <h3>Player 2</h3>
+                    <div class="keybind-row"><span>Up:</span><button id="btn-p2-up" class="keybind-btn" data-player="p2"
+                            data-action="up">UP</button></div>
+                    <div class="keybind-row"><span>Down:</span><button id="btn-p2-down" class="keybind-btn"
+                            data-player="p2" data-action="down">DOWN</button></div>
+                    <div class="keybind-row"><span>Left:</span><button id="btn-p2-left" class="keybind-btn"
+                            data-player="p2" data-action="left">LEFT</button></div>
+                    <div class="keybind-row"><span>Right:</span><button id="btn-p2-right" class="keybind-btn"
+                            data-player="p2" data-action="right">RIGHT</button></div>
+                    <div class="keybind-row"><span>Basic Atk:</span><button id="btn-p2-basic" class="keybind-btn"
+                            data-player="p2" data-action="basic">N</button></div>
+                    <div class="keybind-row"><span>Heavy Atk:</span><button id="btn-p2-heavy" class="keybind-btn"
+                            data-player="p2" data-action="heavy">M</button></div>
+                </div>
+            </div>
+            <button id="options-back-btn" class="menu-btn">Back</button>
+        </div>
+
+        <!-- How to Play Screen -->
+        <div id="how-to-play-screen" class="hidden">
+            <h1>How to Play</h1>
+            <div class="instructions">
+                <p><strong>Goal:</strong> Deplete your opponent's health or knock them off the stage!</p>
+                <div class="controls-container">
+                    <div class="controls-col">
+                        <h3>Player 1</h3>
+                        <p>Move/Jump: <span id="htp-p1-moves">W, A, S, D</span></p>
+                        <p>Basic Atk: <span id="htp-p1-basic">1</span></p>
+                        <p>Heavy Atk: <span id="htp-p1-heavy">2</span></p>
+                    </div>
+                    <div class="controls-col">
+                        <h3>Player 2</h3>
+                        <p>Move/Jump: <span id="htp-p2-moves">Up, Left, Down, Right</span></p>
+                        <p>Basic Atk: <span id="htp-p2-basic">N</span></p>
+                        <p>Heavy Atk: <span id="htp-p2-heavy">M</span></p>
+                    </div>
+                </div>
+                <p><strong>Classes:</strong></p>
+                <p>DPS: Fast, medium health.<br>Tank: Slow, high health & damage.<br>Healer: Low health, regenerates
+                    over time.</p>
+            </div>
+            <button id="how-to-back-btn" class="menu-btn">Back</button>
+        </div>
+
         <!-- Character Selection Screen -->
-        <div id="character-select-screen">
+        <div id="character-select-screen" class="hidden">
             <h1>Select Character</h1>
             <div class="selection-container">
                 <div class="player-selection" id="p1-selection">

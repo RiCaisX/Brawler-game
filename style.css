@@ -17,8 +17,8 @@ body {
 
 #game-container {
     position: relative;
-    width: 1024px;
-    height: 576px;
+    width: 1280px;
+    height: 720px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.8);
     background: linear-gradient(to bottom, #2b2b52 0%, #16213e 100%);
     border: 4px solid #fff;
@@ -169,6 +169,146 @@ canvas {
     margin-bottom: 40px;
     color: #fff;
     text-shadow: 2px 2px 0 #000;
+}
+
+#main-menu-screen,
+#how-to-play-screen,
+#options-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 40;
+}
+
+#main-menu-screen h1,
+#how-to-play-screen h1,
+#options-screen h1 {
+    font-size: 48px;
+    margin-bottom: 50px;
+    color: #fff;
+    text-shadow: 4px 4px 0 #e50914;
+    text-align: center;
+}
+
+#how-to-play-screen h1 {
+    font-size: 32px;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 0 #e50914;
+}
+
+.menu-btn {
+    padding: 20px 40px;
+    font-size: 20px;
+    background-color: #2b2b52;
+    color: white;
+    border: 3px solid #555;
+    cursor: pointer;
+    border-radius: 8px;
+    text-transform: uppercase;
+    transition: all 0.2s;
+    margin: 10px;
+    width: 300px;
+}
+
+.menu-btn:hover {
+    background-color: #3e3e70;
+    border-color: #e50914;
+    transform: scale(1.05);
+}
+
+.instructions {
+    width: 80%;
+    max-width: 800px;
+    background: rgba(43, 43, 82, 0.8);
+    padding: 30px;
+    border: 2px solid #555;
+    border-radius: 8px;
+    margin-bottom: 30px;
+    line-height: 1.6;
+    font-size: 14px;
+    color: #fff;
+}
+
+.instructions p {
+    margin-bottom: 15px;
+}
+
+.controls-container {
+    display: flex;
+    justify-content: space-around;
+    margin: 20px 0;
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 5px;
+}
+
+.controls-col h3 {
+    color: #ffd700;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.options-container {
+    display: flex;
+    justify-content: space-around;
+    width: 80%;
+    max-width: 800px;
+    background: rgba(43, 43, 82, 0.8);
+    padding: 30px;
+    border: 2px solid #555;
+    border-radius: 8px;
+    margin-bottom: 30px;
+}
+
+.keybind-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    width: 300px;
+    font-size: 14px;
+}
+
+.keybind-btn {
+    padding: 10px;
+    background-color: #1a1a2e;
+    color: white;
+    border: 2px solid #555;
+    cursor: pointer;
+    border-radius: 4px;
+    min-width: 100px;
+    text-align: center;
+    transition: all 0.2s;
+    font-size: 12px;
+}
+
+.keybind-btn:hover {
+    background-color: #3e3e70;
+    border-color: #e50914;
+}
+
+.keybind-btn.waiting {
+    background-color: #ffd700;
+    color: #000;
+    border-color: #fff;
+    animation: flash 1s infinite alternate;
+}
+
+@keyframes flash {
+    0% {
+        transform: scale(1);
+    }
+
+    100% {
+        transform: scale(1.05);
+    }
 }
 
 .selection-container {

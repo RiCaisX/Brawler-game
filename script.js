@@ -1,18 +1,18 @@
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
-canvas.width = 1024;
-canvas.height = 576;
+canvas.width = 1280;
+canvas.height = 720;
 
 // Physics constants
 const GRAVITY = 0.6;
 
 // Platforms
 const platforms = [
-    { x: 200, y: 450, width: 624, height: 20 }, // Main stage
-    { x: 100, y: 300, width: 200, height: 15 }, // Left platform
-    { x: 724, y: 300, width: 200, height: 15 }, // Right platform
-    { x: 362, y: 150, width: 300, height: 15 }  // Top middle platform
+    { x: 328, y: 522, width: 624, height: 20 }, // Main stage
+    { x: 228, y: 372, width: 200, height: 15 }, // Left platform
+    { x: 852, y: 372, width: 200, height: 15 }, // Right platform
+    { x: 490, y: 222, width: 300, height: 15 }  // Top middle platform
 ];
 
 // Blast zones (where players die)
@@ -21,21 +21,17 @@ const DEATH_X_LEFT = -200;
 const DEATH_X_RIGHT = canvas.width + 200;
 
 // Inputs
-const keys = {
-    // Player 1
-    w: { pressed: false },
-    a: { pressed: false },
-    d: { pressed: false },
-    1: { pressed: false }, // Basic Atk
-    2: { pressed: false }, // Heavy Atk
-
-    // Player 2
-    ArrowUp: { pressed: false },
-    ArrowLeft: { pressed: false },
-    ArrowRight: { pressed: false },
-    n: { pressed: false }, // Basic Atk
-    m: { pressed: false }, // Heavy Atk
+const keyBinds = {
+    p1: { up: 'w', down: 's', left: 'a', right: 'd', basic: '1', heavy: '2' },
+    p2: { up: 'ArrowUp', down: 'ArrowDown', left: 'ArrowLeft', right: 'ArrowRight', basic: 'n', heavy: 'm' }
 };
+
+const keys = {
+    p1: { up: false, left: false, right: false },
+    p2: { up: false, left: false, right: false }
+};
+
+let waitingForKeybind = null;
 
 // UI Elements
 const ui = {
@@ -50,7 +46,15 @@ const ui = {
     winText: document.getElementById('win-text'),
     charSelectScreen: document.getElementById('character-select-screen'),
     startGameBtn: document.getElementById('start-game-btn'),
-    uiLayer: document.getElementById('ui-layer')
+    uiLayer: document.getElementById('ui-layer'),
+    mainMenuScreen: document.getElementById('main-menu-screen'),
+    howToPlayScreen: document.getElementById('how-to-play-screen'),
+    optionsScreen: document.getElementById('options-screen'),
+    menuPlayBtn: document.getElementById('menu-play-btn'),
+    menuHowToPlayBtn: document.getElementById('menu-how-to-play-btn'),
+    menuOptionsBtn: document.getElementById('menu-options-btn'),
+    howToBackBtn: document.getElementById('how-to-back-btn'),
+    optionsBackBtn: document.getElementById('options-back-btn')
 };
 
 // Classes Definition
@@ -318,6 +322,84 @@ function updateCharSelectionUI(player) {
     });
 }
 
+// Main Menu Handlers
+ui.menuPlayBtn.addEventListener('click', () => {
+    ui.mainMenuScreen.classList.add('hidden');
+    ui.charSelectScreen.classList.remove('hidden');
+});
+
+ui.menuHowToPlayBtn.addEventListener('click', () => {
+    ui.mainMenuScreen.classList.add('hidden');
+    ui.howToPlayScreen.classList.remove('hidden');
+});
+
+ui.menuOptionsBtn.addEventListener('click', () => {
+    ui.mainMenuScreen.classList.add('hidden');
+    ui.optionsScreen.classList.remove('hidden');
+    updateOptionsUI();
+});
+
+ui.howToBackBtn.addEventListener('click', () => {
+    ui.howToPlayScreen.classList.add('hidden');
+    ui.mainMenuScreen.classList.remove('hidden');
+    updateHowToPlayUI();
+});
+
+ui.optionsBackBtn.addEventListener('click', () => {
+    ui.optionsScreen.classList.add('hidden');
+    ui.mainMenuScreen.classList.remove('hidden');
+    updateHowToPlayUI();
+});
+
+function updateOptionsUI() {
+    ['p1', 'p2'].forEach(p => {
+        ['up', 'down', 'left', 'right', 'basic', 'heavy'].forEach(act => {
+            const btn = document.getElementById(`btn-${p}-${act}`);
+            if (btn) btn.innerText = formatKey(keyBinds[p][act]);
+        });
+    });
+}
+
+function formatKey(key) {
+    if (key === ' ') return 'Space';
+    if (key.startsWith('Arrow')) return key.replace('Arrow', '');
+    return key.toUpperCase();
+}
+
+document.querySelectorAll('.keybind-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        if (waitingForKeybind) {
+            waitingForKeybind.btnElement.classList.remove('waiting');
+            waitingForKeybind.btnElement.innerText = formatKey(keyBinds[waitingForKeybind.player][waitingForKeybind.action]);
+        }
+        btn.innerText = 'Press Key...';
+        btn.classList.add('waiting');
+        waitingForKeybind = {
+            player: btn.dataset.player,
+            action: btn.dataset.action,
+            btnElement: btn
+        };
+    });
+});
+
+function setKeybind(key) {
+    if (!waitingForKeybind) return;
+    keyBinds[waitingForKeybind.player][waitingForKeybind.action] = key;
+    waitingForKeybind.btnElement.innerText = formatKey(key);
+    waitingForKeybind.btnElement.classList.remove('waiting');
+    waitingForKeybind = null;
+    updateHowToPlayUI();
+}
+
+function updateHowToPlayUI() {
+    document.getElementById('htp-p1-moves').innerText = `${formatKey(keyBinds.p1.up)}, ${formatKey(keyBinds.p1.left)}, ${formatKey(keyBinds.p1.down)}, ${formatKey(keyBinds.p1.right)}`;
+    document.getElementById('htp-p1-basic').innerText = formatKey(keyBinds.p1.basic);
+    document.getElementById('htp-p1-heavy').innerText = formatKey(keyBinds.p1.heavy);
+    document.getElementById('htp-p2-moves').innerText = `${formatKey(keyBinds.p2.up)}, ${formatKey(keyBinds.p2.left)}, ${formatKey(keyBinds.p2.down)}, ${formatKey(keyBinds.p2.right)}`;
+    document.getElementById('htp-p2-basic').innerText = formatKey(keyBinds.p2.basic);
+    document.getElementById('htp-p2-heavy').innerText = formatKey(keyBinds.p2.heavy);
+}
+
 ui.startGameBtn.addEventListener('click', () => {
     ui.charSelectScreen.classList.add('hidden');
     ui.uiLayer.classList.remove('hidden');
@@ -328,7 +410,7 @@ ui.startGameBtn.addEventListener('click', () => {
 function initGame() {
     // Instantiate Players based on selection
     player1 = new Sprite({
-        position: { x: 300, y: 100 },
+        position: { x: 428, y: 172 },
         velocity: { x: 0, y: 0 },
         color: '#3498db',
         identifier: 'p1',
@@ -337,7 +419,7 @@ function initGame() {
     });
 
     player2 = new Sprite({
-        position: { x: 684, y: 100 },
+        position: { x: 812, y: 172 },
         velocity: { x: 0, y: 0 },
         color: '#e74c3c',
         identifier: 'p2',
@@ -358,8 +440,13 @@ function initGame() {
 }
 
 
-// Event Listeners for Input
 window.addEventListener('keydown', (e) => {
+    if (waitingForKeybind) {
+        setKeybind(e.key);
+        e.preventDefault();
+        return;
+    }
+
     // Restart shortcut
     if (isGameOver && (e.key === ' ' || e.code === 'Space')) {
         location.reload();
@@ -374,20 +461,20 @@ window.addEventListener('keydown', (e) => {
                 ui.startGameBtn.click();
             }
 
-            // Player 1 Selection (W/S)
-            if (e.key === 'w' || e.key === 's') {
+            // Player 1 Selection (Up/Down)
+            if (e.key === keyBinds.p1.up || e.key === keyBinds.p1.down) {
                 let currentIndex = charList.indexOf(selectedChars.p1);
-                if (e.key === 'w') currentIndex = (currentIndex - 1 + charList.length) % charList.length;
-                if (e.key === 's') currentIndex = (currentIndex + 1) % charList.length;
+                if (e.key === keyBinds.p1.up) currentIndex = (currentIndex - 1 + charList.length) % charList.length;
+                if (e.key === keyBinds.p1.down) currentIndex = (currentIndex + 1) % charList.length;
                 selectedChars.p1 = charList[currentIndex];
                 updateCharSelectionUI('p1');
             }
 
             // Player 2 Selection (Up/Down)
-            if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+            if (e.key === keyBinds.p2.up || e.key === keyBinds.p2.down) {
                 let currentIndex = charList.indexOf(selectedChars.p2);
-                if (e.key === 'ArrowUp') currentIndex = (currentIndex - 1 + charList.length) % charList.length;
-                if (e.key === 'ArrowDown') currentIndex = (currentIndex + 1) % charList.length;
+                if (e.key === keyBinds.p2.up) currentIndex = (currentIndex - 1 + charList.length) % charList.length;
+                if (e.key === keyBinds.p2.down) currentIndex = (currentIndex + 1) % charList.length;
                 selectedChars.p2 = charList[currentIndex];
                 updateCharSelectionUI('p2');
             }
@@ -395,32 +482,29 @@ window.addEventListener('keydown', (e) => {
         return;
     }
 
-    switch (e.key) {
-        // Player 1
-        case 'd': keys.d.pressed = true; break;
-        case 'a': keys.a.pressed = true; break;
-        case 'w': keys.w.pressed = true; break;
-        case '1': player1.attack('basic'); break;
-        case '2': player1.attack('heavy'); break;
+    if (e.key === keyBinds.p1.right) keys.p1.right = true;
+    if (e.key === keyBinds.p1.left) keys.p1.left = true;
+    if (e.key === keyBinds.p1.up) keys.p1.up = true;
+    if (e.key === keyBinds.p1.basic) player1.attack('basic');
+    if (e.key === keyBinds.p1.heavy) player1.attack('heavy');
 
-        // Player 2
-        case 'ArrowRight': keys.ArrowRight.pressed = true; break;
-        case 'ArrowLeft': keys.ArrowLeft.pressed = true; break;
-        case 'ArrowUp': keys.ArrowUp.pressed = true; break;
-        case 'n': player2.attack('basic'); break;
-        case 'm': player2.attack('heavy'); break;
-    }
+    if (e.key === keyBinds.p2.right) keys.p2.right = true;
+    if (e.key === keyBinds.p2.left) keys.p2.left = true;
+    if (e.key === keyBinds.p2.up) keys.p2.up = true;
+    if (e.key === keyBinds.p2.basic) player2.attack('basic');
+    if (e.key === keyBinds.p2.heavy) player2.attack('heavy');
 });
 
 window.addEventListener('keyup', (e) => {
-    switch (e.key) {
-        case 'd': keys.d.pressed = false; break;
-        case 'a': keys.a.pressed = false; break;
-        case 'w': keys.w.pressed = false; break;
-        case 'ArrowRight': keys.ArrowRight.pressed = false; break;
-        case 'ArrowLeft': keys.ArrowLeft.pressed = false; break;
-        case 'ArrowUp': keys.ArrowUp.pressed = false; break;
-    }
+    if (!gameStarted || waitingForKeybind) return;
+
+    if (e.key === keyBinds.p1.right) keys.p1.right = false;
+    if (e.key === keyBinds.p1.left) keys.p1.left = false;
+    if (e.key === keyBinds.p1.up) keys.p1.up = false;
+
+    if (e.key === keyBinds.p2.right) keys.p2.right = false;
+    if (e.key === keyBinds.p2.left) keys.p2.left = false;
+    if (e.key === keyBinds.p2.up) keys.p2.up = false;
 });
 
 function rectangularCollision({ rectangle1, rectangle2 }) {
@@ -574,29 +658,29 @@ function gameLoop() {
 
     // Player 1 Movement
     player1.velocity.x = 0;
-    if (keys.a.pressed && !keys.d.pressed) {
+    if (keys.p1.left && !keys.p1.right) {
         player1.velocity.x = -player1.speed;
         player1.facingRight = false;
-    } else if (keys.d.pressed && !keys.a.pressed) {
+    } else if (keys.p1.right && !keys.p1.left) {
         player1.velocity.x = player1.speed;
         player1.facingRight = true;
     }
     // Player 1 Jump
-    if (keys.w.pressed && player1.velocity.y === 0) {
+    if (keys.p1.up && player1.velocity.y === 0) {
         player1.velocity.y = player1.jumpPower;
     }
 
     // Player 2 Movement
     player2.velocity.x = 0;
-    if (keys.ArrowLeft.pressed && !keys.ArrowRight.pressed) {
+    if (keys.p2.left && !keys.p2.right) {
         player2.velocity.x = -player2.speed;
         player2.facingRight = false;
-    } else if (keys.ArrowRight.pressed && !keys.ArrowLeft.pressed) {
+    } else if (keys.p2.right && !keys.p2.left) {
         player2.velocity.x = player2.speed;
         player2.facingRight = true;
     }
     // Player 2 Jump
-    if (keys.ArrowUp.pressed && player2.velocity.y === 0) {
+    if (keys.p2.up && player2.velocity.y === 0) {
         player2.velocity.y = player2.jumpPower;
     }
 
