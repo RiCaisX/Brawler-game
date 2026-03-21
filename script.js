@@ -54,7 +54,12 @@ const ui = {
     menuHowToPlayBtn: document.getElementById('menu-how-to-play-btn'),
     menuOptionsBtn: document.getElementById('menu-options-btn'),
     howToBackBtn: document.getElementById('how-to-back-btn'),
-    optionsBackBtn: document.getElementById('options-back-btn')
+    optionsBackBtn: document.getElementById('options-back-btn'),
+    charSelectBackBtn: document.getElementById('char-select-back-btn'),
+    pauseMenuScreen: document.getElementById('pause-menu-screen'),
+    pauseResumeBtn: document.getElementById('pause-resume-btn'),
+    pauseRestartBtn: document.getElementById('pause-restart-btn'),
+    pauseMainMenuBtn: document.getElementById('pause-main-menu-btn')
 };
 
 // Classes Definition
@@ -158,16 +163,110 @@ class Sprite {
 
         // Tracking how they died
         this.diedFromRingOut = false;
+
+        // Hit flash
+        this.hitFlashFrames = 0;
+    }
+
+    drawStickman() {
+        ctx.save();
+        ctx.strokeStyle = this.hitFlashFrames > 0 ? '#fff' : this.color;
+        ctx.lineWidth = this.charClass === 'tank' ? 8 : (this.charClass === 'healer' ? 4 : 6);
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+
+        const headRadius = this.height / 8;
+        const headX = this.position.x + this.width / 2;
+        const headY = this.position.y + headRadius;
+        const neckY = headY + headRadius;
+        const pelvisY = this.position.y + this.height * 0.65;
+        const shoulderY = neckY + (pelvisY - neckY) * 0.2;
+
+        const footY = this.position.y + this.height;
+        const legLen = (footY - pelvisY) / 2;
+        const armLen = (this.height * 0.35) / 2;
+
+        const dir = this.facingRight ? 1 : -1;
+        const isRunning = false; // Disabled the animation for now
+        const isJumping = false; // Disabled the animation for now
+
+        // Base Idle Options
+        let l1KX = headX - this.width * 0.1 * dir, l1KY = pelvisY + legLen;
+        let l1FX = headX - this.width * 0.2 * dir, l1FY = footY;
+
+        let l2KX = headX + this.width * 0.1 * dir, l2KY = pelvisY + legLen;
+        let l2FX = headX + this.width * 0.2 * dir, l2FY = footY;
+
+        let a1EX = headX - this.width * 0.2 * dir, a1EY = shoulderY + armLen;
+        let a1HX = headX - this.width * 0.1 * dir, a1HY = shoulderY + armLen * 2;
+
+        let a2EX = headX + this.width * 0.2 * dir, a2EY = shoulderY + armLen;
+        let a2HX = headX + this.width * 0.1 * dir, a2HY = shoulderY + armLen * 2;
+
+        // Attack Overrides (Arms)
+        if (this.isAttacking && this.attackStartTime) {
+            const stats = CHAR_CLASSES[this.charClass];
+            const duration = this.attackType === 'heavy' ? stats.attackDuration.heavy : stats.attackDuration.basic;
+            const progress = Math.min(1, (Date.now() - this.attackStartTime) / duration);
+            const punchExt = Math.sin(progress * Math.PI); // 0 -> 1 -> 0
+
+            const reach = this.attackBox.width * 0.8;
+            const targetX = headX + (reach * punchExt * dir);
+
+            if (this.attackType === 'heavy') {
+                // Overhead double hammer punch
+                const slamY = shoulderY - (this.height * 0.4) + (this.height * 0.8 * punchExt);
+                a1EX = headX + (reach * 0.3 * punchExt * dir); a1EY = shoulderY - this.height * 0.2;
+                a1HX = targetX; a1HY = slamY;
+
+                a2EX = a1EX; a2EY = a1EY;
+                a2HX = targetX; a2HY = slamY;
+            } else {
+                // Basic Jab (Front arm punches, Back arm blocks)
+                a2EX = headX + (reach * 0.4 * punchExt * dir);
+                a2EY = shoulderY;
+                a2HX = targetX;
+                a2HY = shoulderY;
+
+                a1EX = headX - this.width * 0.2 * dir;
+                a1EY = shoulderY + armLen * 0.5;
+                a1HX = headX;
+                a1HY = shoulderY - this.height * 0.1;
+            }
+        }
+
+        // --- DRAWING ---
+        // Back Arm
+        ctx.beginPath(); ctx.moveTo(headX, shoulderY); ctx.lineTo(a1EX, a1EY); ctx.lineTo(a1HX, a1HY); ctx.stroke();
+
+        // Back Leg
+        ctx.beginPath(); ctx.moveTo(headX, pelvisY); ctx.lineTo(l1KX, l1KY); ctx.lineTo(l1FX, l1FY); ctx.stroke();
+
+        // Body
+        ctx.beginPath(); ctx.moveTo(headX, neckY); ctx.lineTo(headX, pelvisY); ctx.stroke();
+
+        // Front Leg
+        ctx.beginPath(); ctx.moveTo(headX, pelvisY); ctx.lineTo(l2KX, l2KY); ctx.lineTo(l2FX, l2FY); ctx.stroke();
+
+        // Front Arm
+        ctx.beginPath(); ctx.moveTo(headX, shoulderY); ctx.lineTo(a2EX, a2EY); ctx.lineTo(a2HX, a2HY); ctx.stroke();
+
+        // Head
+        ctx.beginPath();
+        ctx.arc(headX, headY, headRadius, 0, Math.PI * 2);
+        ctx.fillStyle = '#1a1a2e';
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.restore();
     }
 
     draw() {
-        // Draw Player
-        ctx.fillStyle = this.color;
-        ctx.fillRect(this.position.x, this.position.y, this.width, this.height);
+        this.drawStickman();
 
-        // Draw attack box if attacking
+        // Draw attack box if attacking (highly transparent)
         if (this.isAttacking) {
-            ctx.fillStyle = this.attackType === 'heavy' ? 'rgba(255,165,0,0.5)' : 'rgba(255,255,255,0.5)';
+            ctx.fillStyle = this.attackType === 'heavy' ? 'rgba(255,165,0,0.1)' : 'rgba(255,255,255,0.1)';
             ctx.fillRect(
                 this.attackBox.position.x,
                 this.attackBox.position.y,
@@ -185,6 +284,10 @@ class Sprite {
 
     update() {
         this.draw();
+
+        if (this.hitFlashFrames > 0) {
+            this.hitFlashFrames--;
+        }
 
         // Update attack box position and width dynamically based on facing
         this.attackBox.offset.x = this.facingRight ? this.width : -this.attackBox.width;
@@ -282,6 +385,7 @@ class Sprite {
 
         this.attackType = type;
         this.isAttacking = true;
+        this.attackStartTime = now;
 
         setTimeout(() => {
             this.isAttacking = false;
@@ -294,9 +398,29 @@ let player1;
 let player2;
 let gameStarted = false;
 let isGameOver = false; // Tracks if the game over sequence has started
+let isPaused = false;
 let selectedChars = { p1: 'dps', p2: 'dps' };
 const charList = ['dps', 'tank', 'healer'];
 const fireSpawners = [];
+let hitStopFrames = 0;
+
+// Audio Hooks
+function playHitSound(type) {
+    // Placeholder for hit sound
+    // console.log(`Playing ${type} hit sound`);
+}
+
+function playClickSound() {
+    // Placeholder for click sound
+    // console.log('Playing click sound');
+}
+
+// Global click sound for all buttons
+document.addEventListener('click', (e) => {
+    if (e.target.tagName === 'BUTTON') {
+        playClickSound();
+    }
+});
 
 // Handle Character Selection UI (Mouse)
 document.querySelectorAll('.char-btn').forEach(btn => {
@@ -349,6 +473,50 @@ ui.optionsBackBtn.addEventListener('click', () => {
     ui.optionsScreen.classList.add('hidden');
     ui.mainMenuScreen.classList.remove('hidden');
     updateHowToPlayUI();
+});
+
+ui.charSelectBackBtn.addEventListener('click', () => {
+    ui.charSelectScreen.classList.add('hidden');
+    ui.mainMenuScreen.classList.remove('hidden');
+});
+
+function togglePause() {
+    if (isPaused) {
+        isPaused = false;
+        ui.pauseMenuScreen.classList.add('hidden');
+        decreaseTimer();
+        gameLoop();
+    } else {
+        isPaused = true;
+        clearTimeout(timerId);
+        ui.pauseMenuScreen.classList.remove('hidden');
+    }
+}
+
+ui.pauseResumeBtn.addEventListener('click', togglePause);
+
+function resetToScreen(screenElement) {
+    isPaused = false;
+    gameStarted = false;
+    clearTimeout(timerId);
+    timer = 99;
+    ui.timer.innerText = timer;
+    keys.p1.up = keys.p1.left = keys.p1.right = false;
+    keys.p2.up = keys.p2.left = keys.p2.right = false;
+    ui.p1Health.style.width = '100%';
+    ui.p2Health.style.width = '100%';
+    ui.pauseMenuScreen.classList.add('hidden');
+    ui.uiLayer.classList.add('hidden');
+    canvas.classList.add('hidden');
+    screenElement.classList.remove('hidden');
+}
+
+ui.pauseRestartBtn.addEventListener('click', () => {
+    resetToScreen(ui.charSelectScreen);
+});
+
+ui.pauseMainMenuBtn.addEventListener('click', () => {
+    resetToScreen(ui.mainMenuScreen);
 });
 
 function updateOptionsUI() {
@@ -431,6 +599,10 @@ function initGame() {
     ui.p1Health.style.width = '100%';
     ui.p2Health.style.width = '100%';
 
+    timer = 99;
+    ui.timer.innerText = timer;
+    clearTimeout(timerId);
+
     gameStarted = true;
     isGameOver = false;
     particles.length = 0;
@@ -450,6 +622,12 @@ window.addEventListener('keydown', (e) => {
     // Restart shortcut
     if (isGameOver && (e.key === ' ' || e.code === 'Space')) {
         location.reload();
+        return;
+    }
+
+    // Pause menu shortcut
+    if (gameStarted && !isGameOver && e.key === 'Escape') {
+        togglePause();
         return;
     }
 
@@ -519,7 +697,7 @@ function rectangularCollision({ rectangle1, rectangle2 }) {
 let timerId;
 let timer = 99;
 function decreaseTimer() {
-    if (timer > 0 && gameStarted) {
+    if (timer > 0 && gameStarted && !isPaused) {
         timerId = setTimeout(decreaseTimer, 1000);
         timer--;
         ui.timer.innerText = timer;
@@ -570,6 +748,12 @@ function applyDamageAndKnockback(attacker, defender) {
 
     defender.health -= damage;
     defender.lastHitReceivedTime = Date.now();
+    defender.hitFlashFrames = 6;
+    playHitSound(attacker.attackType);
+
+    if (attacker.attackType === 'heavy') {
+        hitStopFrames = 6; // Hit stop for 6 frames on heavy attack
+    }
 
     if (attacker.attackType === 'basic' && defender.charClass === 'healer') {
         defender.healableDamage += damage; // Accumulate healable damage
@@ -603,7 +787,14 @@ function applyDamageAndKnockback(attacker, defender) {
 }
 
 function gameLoop() {
-    if (!gameStarted) return;
+    if (!gameStarted || isPaused) return;
+
+    if (hitStopFrames > 0) {
+        hitStopFrames--;
+        window.requestAnimationFrame(gameLoop);
+        return; // Skip updating state and rendering (frozen screen)
+    }
+
     window.requestAnimationFrame(gameLoop);
 
     // Clear canvas

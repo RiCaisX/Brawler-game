@@ -140,14 +140,22 @@ canvas {
     font-size: 16px;
     background-color: #e50914;
     color: white;
-    border: 2px solid white;
+    border: 4px solid white;
     cursor: pointer;
-    border-radius: 4px;
-    transition: background 0.2s;
+    border-radius: 0;
+    transition: all 0.1s;
+    box-shadow: inset -4px -4px 0px 0px rgba(0, 0, 0, 0.5), 4px 4px 0px 0px rgba(0, 0, 0, 0.8);
 }
 
 #game-over-screen button:hover {
-    background-color: #b20710;
+    background-color: #ff4c4c;
+    transform: translate(-2px, -2px);
+    box-shadow: inset -4px -4px 0px 0px rgba(0, 0, 0, 0.5), 6px 6px 0px 0px rgba(0, 0, 0, 0.8);
+}
+
+#game-over-screen button:active {
+    transform: translate(2px, 2px);
+    box-shadow: inset -2px -2px 0px 0px rgba(0, 0, 0, 0.5), 2px 2px 0px 0px rgba(0, 0, 0, 0.8);
 }
 
 #character-select-screen {
@@ -173,13 +181,18 @@ canvas {
 
 #main-menu-screen,
 #how-to-play-screen,
-#options-screen {
+#options-screen,
+#pause-menu-screen {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.9);
+    background: repeating-linear-gradient(0deg,
+            rgba(0, 0, 0, 0.95),
+            rgba(0, 0, 0, 0.95) 2px,
+            rgba(0, 0, 0, 0.9) 2px,
+            rgba(0, 0, 0, 0.9) 4px);
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -189,7 +202,8 @@ canvas {
 
 #main-menu-screen h1,
 #how-to-play-screen h1,
-#options-screen h1 {
+#options-screen h1,
+#pause-menu-screen h1 {
     font-size: 48px;
     margin-bottom: 50px;
     color: #fff;
@@ -208,19 +222,26 @@ canvas {
     font-size: 20px;
     background-color: #2b2b52;
     color: white;
-    border: 3px solid #555;
+    border: 4px solid #555;
     cursor: pointer;
-    border-radius: 8px;
+    border-radius: 0;
     text-transform: uppercase;
-    transition: all 0.2s;
+    transition: all 0.1s;
     margin: 10px;
     width: 300px;
+    box-shadow: inset -4px -4px 0px 0px rgba(0, 0, 0, 0.5), 4px 4px 0px 0px rgba(0, 0, 0, 0.8);
 }
 
 .menu-btn:hover {
     background-color: #3e3e70;
     border-color: #e50914;
-    transform: scale(1.05);
+    transform: translate(-2px, -2px);
+    box-shadow: inset -4px -4px 0px 0px rgba(0, 0, 0, 0.5), 6px 6px 0px 0px rgba(0, 0, 0, 0.8);
+}
+
+.menu-btn:active {
+    transform: translate(2px, 2px);
+    box-shadow: inset -2px -2px 0px 0px rgba(0, 0, 0, 0.5), 2px 2px 0px 0px rgba(0, 0, 0, 0.8);
 }
 
 .instructions {
@@ -333,25 +354,86 @@ canvas {
 
 .char-btn {
     padding: 15px 30px;
-    width: 250px;
+    width: 280px;
     font-size: 14px;
     background-color: #2b2b52;
     color: white;
-    border: 2px solid #555;
+    border: 4px solid #555;
     cursor: pointer;
-    border-radius: 4px;
-    transition: all 0.2s;
+    border-radius: 0;
+    transition: all 0.1s;
+    box-shadow: inset -4px -4px 0px 0px rgba(0, 0, 0, 0.5), 4px 4px 0px 0px rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 15px;
 }
 
 .char-btn:hover {
     background-color: #3e3e70;
     border-color: #aaa;
+    transform: translate(-2px, -2px);
+    box-shadow: inset -4px -4px 0px 0px rgba(0, 0, 0, 0.5), 6px 6px 0px 0px rgba(0, 0, 0, 0.8);
 }
 
-.char-btn.selected {
-    background-color: #4CAF50;
-    border-color: #fff;
-    box-shadow: 0 0 10px #4CAF50;
+.char-btn:active {
+    transform: translate(2px, 2px);
+    box-shadow: inset -2px -2px 0px 0px rgba(0, 0, 0, 0.5), 2px 2px 0px 0px rgba(0, 0, 0, 0.8);
+}
+
+/* Base portrait square */
+.char-btn::before {
+    content: '';
+    display: block;
+    width: 24px;
+    height: 24px;
+    border: 2px solid white;
+    background-color: #000;
+}
+
+/* DPS Styles */
+.char-btn[data-char="dps"]::before {
+    background: radial-gradient(circle, #ff4c4c 40%, #cc0000 80%);
+}
+
+.char-btn[data-char="dps"]:hover {
+    border-color: #ff4c4c;
+}
+
+.char-btn[data-char="dps"].selected {
+    background-color: #8B0000;
+    border-color: #ff4c4c;
+    box-shadow: inset -4px -4px 0px 0px rgba(0, 0, 0, 0.5), 0 0 15px #ff4c4c;
+}
+
+/* Tank Styles */
+.char-btn[data-char="tank"]::before {
+    background: radial-gradient(circle, #4c4cff 40%, #0000cc 80%);
+}
+
+.char-btn[data-char="tank"]:hover {
+    border-color: #4c4cff;
+}
+
+.char-btn[data-char="tank"].selected {
+    background-color: #00008B;
+    border-color: #4c4cff;
+    box-shadow: inset -4px -4px 0px 0px rgba(0, 0, 0, 0.5), 0 0 15px #4c4cff;
+}
+
+/* Healer Styles */
+.char-btn[data-char="healer"]::before {
+    background: radial-gradient(circle, #4cff4c 40%, #00cc00 80%);
+}
+
+.char-btn[data-char="healer"]:hover {
+    border-color: #4cff4c;
+}
+
+.char-btn[data-char="healer"].selected {
+    background-color: #006400;
+    border-color: #4cff4c;
+    box-shadow: inset -4px -4px 0px 0px rgba(0, 0, 0, 0.5), 0 0 15px #4cff4c;
 }
 
 #start-game-btn {
@@ -359,16 +441,23 @@ canvas {
     font-size: 20px;
     background-color: #e50914;
     color: white;
-    border: 2px solid white;
+    border: 4px solid white;
     cursor: pointer;
-    border-radius: 8px;
+    border-radius: 0;
     text-transform: uppercase;
-    transition: transform 0.2s, background 0.2s;
+    transition: all 0.1s;
+    box-shadow: inset -4px -4px 0px 0px rgba(0, 0, 0, 0.5), 4px 4px 0px 0px rgba(0, 0, 0, 0.8);
 }
 
 #start-game-btn:hover {
-    background-color: #b20710;
-    transform: scale(1.05);
+    background-color: #ff4c4c;
+    transform: translate(-2px, -2px);
+    box-shadow: inset -4px -4px 0px 0px rgba(0, 0, 0, 0.5), 6px 6px 0px 0px rgba(0, 0, 0, 0.8);
+}
+
+#start-game-btn:active {
+    transform: translate(2px, 2px);
+    box-shadow: inset -2px -2px 0px 0px rgba(0, 0, 0, 0.5), 2px 2px 0px 0px rgba(0, 0, 0, 0.8);
 }
 
 .hidden {

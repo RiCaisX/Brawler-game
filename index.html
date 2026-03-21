@@ -88,19 +88,20 @@
             <h1>Select Character</h1>
             <div class="selection-container">
                 <div class="player-selection" id="p1-selection">
-                    <h2>Player 1 (WASD)</h2>
+                    <h2>Player 1</h2>
                     <button class="char-btn selected" data-player="p1" data-char="dps">DPS (Original)</button>
                     <button class="char-btn" data-player="p1" data-char="tank">Tank</button>
                     <button class="char-btn" data-player="p1" data-char="healer">Healer</button>
                 </div>
                 <div class="player-selection" id="p2-selection">
-                    <h2>Player 2 (Arrows)</h2>
+                    <h2>Player 2</h2>
                     <button class="char-btn selected" data-player="p2" data-char="dps">DPS (Original)</button>
                     <button class="char-btn" data-player="p2" data-char="tank">Tank</button>
                     <button class="char-btn" data-player="p2" data-char="healer">Healer</button>
                 </div>
             </div>
             <button id="start-game-btn">Start Fight! (Space)</button>
+            <button id="char-select-back-btn" class="menu-btn" style="margin-top: 15px;">Back</button>
         </div>
 
         <!-- Health Bar UI -->
@@ -138,6 +139,14 @@
         <div id="game-over-screen" class="hidden">
             <h1 id="win-text">Player 1 Wins!</h1>
             <button onclick="location.reload()">Restart (Space)</button>
+        </div>
+
+        <!-- Pause Menu Screen -->
+        <div id="pause-menu-screen" class="hidden">
+            <h1>Paused</h1>
+            <button id="pause-resume-btn" class="menu-btn">Resume</button>
+            <button id="pause-restart-btn" class="menu-btn">Character Selection</button>
+            <button id="pause-main-menu-btn" class="menu-btn">Main Menu</button>
         </div>
 
         <canvas id="gameCanvas" class="hidden"></canvas>
